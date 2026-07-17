@@ -30,6 +30,7 @@ import {
   Microscope, Syringe, PlayCircle, Star, Quote, Send, MessageCircle,
   CheckCircle2, Calendar, GraduationCap, Sparkles, ArrowUpRight, ArrowRight,
   AlertTriangle, BadgeCheck, ArrowUp, Loader2, BookOpen, Droplet, Salad,
+  FileText, ScrollText,
 } from "lucide-react";
 
 /* ============================================================
@@ -112,6 +113,104 @@ const IMG = {
 /* ---------------- Booking context (drives the modal) ---------------- */
 const BookingContext = createContext(null);
 const useBooking = () => useContext(BookingContext);
+
+/* ---------------- Legal context (drives the Privacy/Terms modal) ---------------- */
+const LegalContext = createContext(null);
+const useLegal = () => useContext(LegalContext);
+
+/* ---------------- Legal content (Privacy Policy + Terms & Conditions) ---------------- */
+const LEGAL_CONTENT = {
+  privacy: {
+    title: "Privacy Policy",
+    updated: "Last updated: July 2026",
+    icon: <ShieldCheck size={20} />,
+    body: [
+      {
+        h: "Overview",
+        p: "Papalkar Gastrocare Hospital, Pusad (\"we\", \"us\", \"our\") respects your privacy. This Privacy Policy explains what information we collect through this website, how we use it, and the choices you have.",
+      },
+      {
+        h: "Information We Collect",
+        p: "When you use our appointment booking form or contact us via WhatsApp/call, we may collect your name, phone number, preferred appointment date, the service you're enquiring about, and any message or symptom details you choose to share.",
+      },
+      {
+        h: "How We Use Your Information",
+        p: "Information submitted through this website is used solely to respond to your appointment request, confirm bookings, and provide relevant updates about your consultation or procedure. We do not sell or rent your personal information to third parties.",
+      },
+      {
+        h: "WhatsApp Communication",
+        p: "Our booking form opens WhatsApp with your details pre-filled so our front-desk team can confirm your appointment. This message is sent directly from your device to our hospital's WhatsApp number; standard WhatsApp terms and data practices apply to that platform.",
+      },
+      {
+        h: "Medical Records",
+        p: "Any medical history, diagnosis, or treatment records created during your consultation or procedure are maintained as part of your confidential medical file, in accordance with applicable healthcare recordkeeping practices in India, and are not published or shared on this website.",
+      },
+      {
+        h: "Cookies & Analytics",
+        p: "This website may use basic, privacy-respecting analytics to understand overall visitor traffic and improve the site. No sensitive medical information is collected through analytics.",
+      },
+      {
+        h: "Third-Party Links",
+        p: "Our site may link to third-party services (such as Google Maps or WhatsApp). We are not responsible for the privacy practices of those external platforms.",
+      },
+      {
+        h: "Your Rights",
+        p: "You may request access to, correction of, or deletion of the personal details you have shared with us by contacting the hospital directly using the phone numbers or WhatsApp link provided on this site.",
+      },
+      {
+        h: "Contact Us",
+        p: `For any privacy-related questions, please reach out to Papalkar Gastrocare Hospital at ${PHONE_1} / ${PHONE_2}, or via WhatsApp.`,
+      },
+    ],
+  },
+  terms: {
+    title: "Terms & Conditions",
+    updated: "Last updated: July 2026",
+    icon: <ScrollText size={20} />,
+    body: [
+      {
+        h: "Acceptance of Terms",
+        p: "By accessing or using this website, you agree to be bound by these Terms & Conditions. If you do not agree, please discontinue use of this website.",
+      },
+      {
+        h: "Purpose of This Website",
+        p: "This website provides general information about Papalkar Gastrocare Hospital, Pusad, our specialist, our services, and a convenient way to request an appointment. It is intended for informational purposes and does not constitute medical advice.",
+      },
+      {
+        h: "Not a Substitute for Medical Advice",
+        p: "Content on this website, including health insights and service descriptions, is for general awareness only and should not be treated as a diagnosis or substitute for an in-person consultation with a qualified doctor. Always seek professional medical advice for your specific condition.",
+      },
+      {
+        h: "Appointment Requests",
+        p: "Submitting the appointment form or messaging us on WhatsApp is a request only and does not guarantee an immediate confirmed slot. Our team will contact you to confirm the date and time based on availability.",
+      },
+      {
+        h: "Accuracy of Information",
+        p: "While we strive to keep information about our doctor, services, timings, and facilities accurate and up to date, details may change without prior notice. Please confirm critical information (such as fasting instructions or procedure timings) directly with our hospital staff.",
+      },
+      {
+        h: "User Responsibilities",
+        p: "You agree to provide accurate and truthful information (such as your name and phone number) when using the booking form, so that our team can reach you regarding your appointment.",
+      },
+      {
+        h: "Intellectual Property",
+        p: "All content on this website, including text, images, and design elements, belongs to Papalkar Gastrocare Hospital unless otherwise credited, and may not be reproduced without permission.",
+      },
+      {
+        h: "Limitation of Liability",
+        p: "Papalkar Gastrocare Hospital is not liable for any indirect or incidental issues arising from the use of this website, including delays in appointment confirmation or third-party platform (WhatsApp, Google Maps) outages.",
+      },
+      {
+        h: "Changes to These Terms",
+        p: "We may update these Terms & Conditions from time to time. Continued use of the website after changes are posted constitutes acceptance of the updated terms.",
+      },
+      {
+        h: "Governing Law",
+        p: "These terms are governed by the laws of India, and any disputes shall be subject to the jurisdiction of the courts in Maharashtra.",
+      },
+    ],
+  },
+};
 
 /* ---------------- Global style ---------------- */
 const GlobalStyle = () => (
@@ -1409,53 +1508,131 @@ const Contact = () => (
   </section>
 );
 
+/* ================= LEGAL MODAL (Privacy Policy / Terms & Conditions) ================= */
+const LegalModal = () => {
+  const { isOpen, activeType, closeLegal, openLegal } = useLegal();
+  const content = activeType ? LEGAL_CONTENT[activeType] : null;
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && content && (
+        <motion.div
+          className="fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="absolute inset-0 bg-[var(--emerald-950)]/70 pg-glass"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={closeLegal}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto pg-scrollbar"
+          >
+            <div className="sticky top-0 bg-white/95 pg-glass flex items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-7 pb-4 border-b border-black/5 z-10">
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-[var(--emerald-800)]/10 text-[var(--emerald-800)] flex items-center justify-center shrink-0">
+                  {content.icon}
+                </span>
+                <div>
+                  <h3 className="font-display font-black text-xl sm:text-2xl text-[var(--ink)] leading-tight">{content.title}</h3>
+                  <p className="text-[11px] font-mono text-gray-400 mt-0.5">{content.updated}</p>
+                </div>
+              </div>
+              <button onClick={closeLegal} aria-label="Close" className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors shrink-0">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="px-6 sm:px-8 py-7 space-y-6">
+              {content.body.map((sec, i) => (
+                <div key={i}>
+                  <h4 className="font-display font-bold text-[var(--ink)] text-base sm:text-lg mb-1.5">{sec.h}</h4>
+                  <p className="text-gray-500 text-sm sm:text-[15px] leading-relaxed">{sec.p}</p>
+                </div>
+              ))}
+
+              <div className="pt-2 flex flex-wrap gap-3">
+                <button
+                  onClick={() => openLegal(activeType === "privacy" ? "terms" : "privacy")}
+                  className="pg-btn-outline inline-flex items-center gap-2 border border-[var(--emerald-800)]/25 text-[var(--emerald-800)] font-semibold px-5 py-2.5 rounded-full text-sm"
+                >
+                  {activeType === "privacy" ? <><ScrollText size={16} /> View Terms & Conditions</> : <><ShieldCheck size={16} /> View Privacy Policy</>}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
 /* ================= FOOTER ================= */
-const Footer = () => (
-  <footer className="bg-[var(--emerald-950)] text-teal-50/80 pt-20 pb-8">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-      <div>
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center">
-            <Stethoscope className="text-[var(--emerald-800)]" size={22} />
+const Footer = () => {
+  const { openLegal } = useLegal();
+  return (
+    <footer className="bg-[var(--emerald-950)] text-teal-50/80 pt-20 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center">
+              <Stethoscope className="text-[var(--emerald-800)]" size={22} />
+            </div>
+            <p className="font-display font-bold text-white text-lg">Papalkar Gastrocare</p>
           </div>
-          <p className="font-display font-bold text-white text-lg">Papalkar Gastrocare</p>
+          <p className="text-sm mt-4 leading-relaxed text-teal-50/60">
+            Pusad's specialist hospital for stomach, liver, pancreas and intestinal care — पोट स्वस्थ, आयुष्य मस्त.
+          </p>
         </div>
-        <p className="text-sm mt-4 leading-relaxed text-teal-50/60">
-          Pusad's specialist hospital for stomach, liver, pancreas and intestinal care — पोट स्वस्थ, आयुष्य मस्त.
-        </p>
+
+        <div>
+          <p className="font-display font-bold text-white mb-4">Quick Links</p>
+          <ul className="space-y-2.5 text-sm">
+            {NAV_LINKS.map((l) => (
+              <li key={l.href}><a href={l.href} className="hover:text-white transition-colors">{l.label}</a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className="font-display font-bold text-white mb-4">Services</p>
+          <ul className="space-y-2.5 text-sm">
+            {SERVICES.slice(0, 5).map((s) => <li key={s.title}><a href="#services" className="hover:text-white transition-colors">{s.title}</a></li>)}
+          </ul>
+        </div>
+
+        <div>
+          <p className="font-display font-bold text-white mb-4">Contact</p>
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-start gap-2"><MapPin size={16} className="mt-0.5 shrink-0" /> जुने पापळकर हॉस्पिटल, टीव्ही सेंटर समोर, तलाव लेआउट, पुसद</li>
+            <li className="flex items-center gap-2"><Phone size={16} /> {PHONE_1} / {PHONE_2}</li>
+          </ul>
+        </div>
       </div>
 
-      <div>
-        <p className="font-display font-bold text-white mb-4">Quick Links</p>
-        <ul className="space-y-2.5 text-sm">
-          {NAV_LINKS.map((l) => (
-            <li key={l.href}><a href={l.href} className="hover:text-white transition-colors">{l.label}</a></li>
-          ))}
-        </ul>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-teal-50/50">
+        <p>© {new Date().getFullYear()} Papalkar Gastrocare Hospital. All rights reserved.</p>
+        <div className="flex items-center gap-5">
+          <button onClick={() => openLegal("privacy")} className="hover:text-white transition-colors underline-offset-2 hover:underline">
+            Privacy Policy
+          </button>
+          <button onClick={() => openLegal("terms")} className="hover:text-white transition-colors underline-offset-2 hover:underline">
+            Terms &amp; Conditions
+          </button>
+        </div>
       </div>
-
-      <div>
-        <p className="font-display font-bold text-white mb-4">Services</p>
-        <ul className="space-y-2.5 text-sm">
-          {SERVICES.slice(0, 5).map((s) => <li key={s.title}><a href="#services" className="hover:text-white transition-colors">{s.title}</a></li>)}
-        </ul>
-      </div>
-
-      <div>
-        <p className="font-display font-bold text-white mb-4">Contact</p>
-        <ul className="space-y-3 text-sm">
-          <li className="flex items-start gap-2"><MapPin size={16} className="mt-0.5 shrink-0" /> जुने पापळकर हॉस्पिटल, टीव्ही सेंटर समोर, तलाव लेआउट, पुसद</li>
-          <li className="flex items-center gap-2"><Phone size={16} /> {PHONE_1} / {PHONE_2}</li>
-        </ul>
-      </div>
-    </div>
-
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-teal-50/50">
-      <p>© {new Date().getFullYear()} Papalkar Gastrocare Hospital. All rights reserved.</p>
-      <p>Designed with care for better digestive health.</p>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 /* ================= FLOATING BUTTONS ================= */
 const WhatsAppFloat = () => (
@@ -1546,6 +1723,7 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [emergencyVisible, setEmergencyVisible] = useState(true);
   const [booking, setBooking] = useState({ isOpen: false, presetService: undefined });
+  const [legal, setLegal] = useState({ isOpen: false, activeType: null });
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 1100);
@@ -1555,39 +1733,50 @@ export default function App() {
   const openBooking = useCallback((service) => setBooking({ isOpen: true, presetService: service }), []);
   const closeBooking = useCallback(() => setBooking((b) => ({ ...b, isOpen: false })), []);
 
+  const openLegal = useCallback((type) => setLegal({ isOpen: true, activeType: type }), []);
+  const closeLegal = useCallback(() => setLegal((l) => ({ ...l, isOpen: false })), []);
+
   const bookingValue = useMemo(
     () => ({ isOpen: booking.isOpen, presetService: booking.presetService, openBooking, closeBooking }),
     [booking, openBooking, closeBooking]
   );
 
+  const legalValue = useMemo(
+    () => ({ isOpen: legal.isOpen, activeType: legal.activeType, openLegal, closeLegal }),
+    [legal, openLegal, closeLegal]
+  );
+
   return (
     <BookingContext.Provider value={bookingValue}>
-      <div className="pg-root">
-        <GlobalStyle />
-        <Preloader done={loaded} />
-        <Toaster position="top-center" toastOptions={{ style: { fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "14px" } }} />
-        <EmergencyBar visible={emergencyVisible} onClose={() => setEmergencyVisible(false)} />
-        <Navbar />
-        <Hero />
-        <TrustMarquee />
-        <StatsBar />
-        <About />
-        <Team />
-        <Services />
-        <WhyUs />
-        <Gallery />
-        <VideoSection />
-        <Insights />
-        <Testimonials />
-        <Journey />
-        <FAQ />
-        <Location />
-        <Contact />
-        <Footer />
-        <WhatsAppFloat />
-        <BackToTop />
-        <BookingModal />
-      </div>
+      <LegalContext.Provider value={legalValue}>
+        <div className="pg-root">
+          <GlobalStyle />
+          <Preloader done={loaded} />
+          <Toaster position="top-center" toastOptions={{ style: { fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "14px" } }} />
+          <EmergencyBar visible={emergencyVisible} onClose={() => setEmergencyVisible(false)} />
+          <Navbar />
+          <Hero />
+          <TrustMarquee />
+          <StatsBar />
+          <About />
+          <Team />
+          <Services />
+          <WhyUs />
+          <Gallery />
+          <VideoSection />
+          <Insights />
+          <Testimonials />
+          <Journey />
+          <FAQ />
+          <Location />
+          <Contact />
+          <Footer />
+          <WhatsAppFloat />
+          <BackToTop />
+          <BookingModal />
+          <LegalModal />
+        </div>
+      </LegalContext.Provider>
     </BookingContext.Provider>
   );
 }
