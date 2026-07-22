@@ -82,7 +82,7 @@ export default function Navbar() {
 
         <div className="md:hidden flex items-center justify-between px-4 py-3">
           <a href="/" className="flex items-center gap-2 text-white font-extrabold font-serif-display">
-            MEDI<span className="text-[#D9B65C]">CARE</span>
+            PAPALKAR<span className="text-[#D9B65C]">Gastrocare</span>
           </a>
           <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white">
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
