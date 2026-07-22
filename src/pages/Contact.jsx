@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MapPin, Phone, Mail, Plus, Minus, Send, ShieldCheck } from "lucide-react";
+import { MapPin, Phone, Mail, Plus, Minus, Send, ShieldCheck, MessageCircle } from "lucide-react";
 
 /* ============================================================
    CONTACT PAGE — same layout, premium styling
@@ -9,6 +9,27 @@ import { MapPin, Phone, Mail, Plus, Minus, Send, ShieldCheck } from "lucide-reac
    Below: Map + CTA strip
    ============================================================ */
 
+/* ----------------------------- WHATSAPP CONFIG ----------------------------- */
+
+/** All "Get In Touch" messages are sent to this WhatsApp number */
+const WHATSAPP_NUMBER = "918381845350";
+
+/** Builds a formatted WhatsApp message from the contact form and opens WhatsApp with it pre-filled */
+function sendContactToWhatsApp(form) {
+  const lines = [
+    "*New Contact Message*",
+    "",
+    `*Name:* ${form.name || "-"}`,
+    `*Phone:* ${form.phone || "-"}`,
+    `*Email:* ${form.email || "-"}`,
+  ];
+  if (form.message) lines.push(`*Message:* ${form.message}`);
+
+  const text = encodeURIComponent(lines.join("\n"));
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 const ACCORDION_DATA = [
   {
     title: "Medical Hospital",
@@ -16,7 +37,7 @@ const ACCORDION_DATA = [
       <div className="space-y-2.5 text-sm text-slate-600">
         <p className="flex items-start gap-2.5">
           <MapPin size={15} className="mt-0.5 text-[#17B9A6] shrink-0" />
-          Medicare Campus, Near Vijay Talkies, Nagpur Road, PUSAD
+          Papalkar Campus, Near Vijay Talkies, Nagpur Road, PUSAD
         </p>
         <p className="flex items-center gap-2.5">
           <Phone size={15} className="text-[#17B9A6] shrink-0" />
@@ -24,7 +45,7 @@ const ACCORDION_DATA = [
         </p>
         <p className="flex items-center gap-2.5">
           <Mail size={15} className="text-[#17B9A6] shrink-0" />
-          E-mail: <a href="mailto:medicarepusad@gmail.com" className="text-[#0B3D66] font-semibold hover:text-[#17B9A6] transition-colors">medicarepusad@gmail.com</a>
+          E-mail: <a href="mailto:papalkar@gmail.com" className="text-[#0B3D66] font-semibold hover:text-[#17B9A6] transition-colors">papalkar@gmail.com</a>
         </p>
       </div>
     ),
@@ -67,7 +88,7 @@ const ACCORDION_DATA = [
     ),
   },
   {
-    title: "Medicare Medishop",
+    title: "Papalkar Medishop",
     content: (
       <div className="space-y-2.5 text-sm text-slate-600">
         <p className="flex items-center gap-2.5"><Phone size={15} className="text-[#17B9A6]" /> Call us: 7888004345</p>
@@ -154,6 +175,10 @@ function GetInTouchForm() {
       alert("Please answer the security question correctly.");
       return;
     }
+
+    // Send the message straight to WhatsApp
+    sendContactToWhatsApp(form);
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -173,9 +198,9 @@ function GetInTouchForm() {
       {submitted ? (
         <div className="relative flex flex-col items-center justify-center py-14 text-center">
           <div className="w-16 h-16 rounded-full bg-teal-50 text-[#17B9A6] flex items-center justify-center mb-4 shadow-inner">
-            <Send size={24} />
+            <MessageCircle size={24} />
           </div>
-          <h4 className="text-lg font-bold text-[#0B3D66] mb-1 font-serif-display">Message Sent!</h4>
+          <h4 className="text-lg font-bold text-[#0B3D66] mb-1 font-serif-display">Sent to WhatsApp!</h4>
           <p className="text-sm text-slate-500">We'll get back to you shortly.</p>
         </div>
       ) : (
@@ -266,7 +291,8 @@ export default function Contact() {
       <section className="w-full h-[380px] relative shadow-inner">
         <iframe
           title="Hospital Location"
-          src="https://www.google.com/maps?q=Medicare+Multispeciality+Hospital+Pusad&output=embed"
+          src="https://www.google.com/maps?q=
+Papalkar Gastrocare+Multispeciality+Hospital+Pusad&output=embed"
           className="w-full h-full border-0 grayscale-[10%] contrast-[1.03]"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
@@ -274,7 +300,7 @@ export default function Contact() {
       </section>
 
       {/* CTA strip */}
-      <section className="relative bg-gradient-to-br from-[#071B33] via-[#0B3D66] to-[#0d4d78] py-16 text-center px-4 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#071B33] via-[#0B3D66] to-[#0d4d78] py-16 text-center px-4 mt-10 overflow-hidden">
         <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-[#17B9A6]/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-[#D9B65C]/10 blur-3xl pointer-events-none" />
 

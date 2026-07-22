@@ -24,12 +24,46 @@ import {
   Mail,
   Layers,
   CheckCircle2,
+  MessageCircle,
 } from "lucide-react";
 
 /* ============================================================
    Same design language as Home: Ink navy / Royal / Teal / Gold
    Fraunces display + Inter body + glass + reveal-on-scroll
    ============================================================ */
+
+/* ----------------------------- WHATSAPP CONFIG ----------------------------- */
+
+/** All job applications are sent to this WhatsApp number */
+const WHATSAPP_NUMBER = "918381845350";
+
+/**
+ * Builds a formatted WhatsApp message from the application form and opens
+ * WhatsApp with it pre-filled. Note: browsers cannot auto-attach a real file
+ * to a WhatsApp message via a link (wa.me only supports text) — so the CV's
+ * file name is included in the message and the applicant is asked to attach
+ * the file manually inside the WhatsApp chat that opens.
+ */
+function sendApplicationToWhatsApp(form) {
+  const lines = [
+    "*New Job Application*",
+    "",
+    `*Department:* ${form.department || "-"}`,
+    `*Name:* ${form.name || "-"}`,
+    `*Phone:* ${form.phone || "-"}`,
+    `*Email:* ${form.email || "-"}`,
+    `*Experience:* ${form.experience || "-"}`,
+    `*CV File:* ${form.fileName || "Not attached"}`,
+  ];
+  if (form.note) lines.push(`*Note:* ${form.note}`);
+  if (form.fileName) {
+    lines.push("", "_(Please attach the CV file in this chat before sending.)_");
+  }
+
+  const text = encodeURIComponent(lines.join("\n"));
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
 
 const STATS = [
   { icon: Building2, value: "40+", label: "Team Members" },
@@ -223,6 +257,10 @@ function VacancySection() {
       return;
     }
     setError("");
+
+    // Send the filled application straight to WhatsApp
+    sendApplicationToWhatsApp(form);
+
     setSubmitted(true);
   };
 
@@ -258,16 +296,29 @@ function VacancySection() {
           <h3 className="text-xl font-bold text-slate-800 font-serif-display mb-1">Career</h3>
           <span className="draw-line-static w-10 block mb-4" />
           <p className="text-sm text-slate-500 mb-6 leading-relaxed">
-            Fill in your details below and our HR team will get in touch with you regarding suitable openings.
+            Fill in your details below — on submit, your application opens directly in WhatsApp
+            for our HR team.
           </p>
 
           {submitted ? (
             <div className="flex flex-col items-center text-center gap-3 py-10">
-              <CheckCircle2 size={40} className="text-[#17B9A6]" />
-              <p className="font-bold text-slate-800 font-serif-display text-lg">Application Submitted!</p>
+              <div className="w-16 h-16 rounded-full bg-teal-50 text-[#17B9A6] flex items-center justify-center glow-pulse">
+                <CheckCircle2 size={34} />
+              </div>
+              <p className="font-bold text-slate-800 font-serif-display text-lg">Application Sent!</p>
               <p className="text-sm text-slate-500 max-w-xs">
-                Thank you for applying. Our HR team will review your details and reach out soon.
+                Your details have been sent to our HR team on WhatsApp.
+                {form.fileName && (
+                  <> Please attach <span className="font-semibold text-slate-700">{form.fileName}</span> in that chat before sending.</>
+                )}
               </p>
+              <button
+                type="button"
+                onClick={() => sendApplicationToWhatsApp(form)}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#17B9A6] underline underline-offset-2"
+              >
+                <MessageCircle size={15} /> Didn't open? Send again
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -333,6 +384,14 @@ function VacancySection() {
                   <input type="file" onChange={handleFile} className="hidden" />
                 </label>
               </div>
+              {form.fileName && (
+                <p className="text-[11px] text-slate-400 -mt-2 pl-1 flex items-start gap-1">
+                  <Info size={12} className="shrink-0 mt-0.5" />
+                  WhatsApp links can't auto-attach files — you'll just need to attach{" "}
+                  <span className="font-semibold text-slate-500">{form.fileName}</span> yourself in the
+                  chat that opens.
+                </p>
+              )}
 
               <textarea
                 value={form.note}
@@ -538,6 +597,12 @@ function PageStyles() {
       }
       .blob { animation: floatBlob 14s ease-in-out infinite; filter: blur(60px); }
       .blob-delay { animation-delay: -6s; }
+
+      @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(23,185,166,0.35); }
+        50% { box-shadow: 0 0 0 10px rgba(23,185,166,0); }
+      }
+      .glow-pulse { animation: glowPulse 2.6s ease-in-out infinite; }
 
       .perk-card { transition: transform 400ms cubic-bezier(.22,1,.36,1), box-shadow 400ms cubic-bezier(.22,1,.36,1); }
       .perk-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -20px rgba(7,27,51,0.25); }

@@ -23,6 +23,31 @@ import {
    Fraunces display font + Inter body + glass cards + gold hairline
    ============================================================ */
 
+/* ----------------------------- WHATSAPP CONFIG ----------------------------- */
+
+/** All appointment requests are sent to this WhatsApp number */
+const WHATSAPP_NUMBER = "918381845350";
+
+/** Builds a formatted WhatsApp message from an appointment form and opens WhatsApp with it pre-filled */
+function sendAppointmentToWhatsApp(form, departmentName) {
+  const lines = [
+    "*New Appointment Request*",
+    "",
+    `*Name:* ${form.name || "-"}`,
+    `*Phone:* ${form.phone || "-"}`,
+    `*Email:* ${form.email || "-"}`,
+    `*Department:* ${departmentName || "-"}`,
+    `*Doctor:* ${form.doctor || "Any available doctor"}`,
+    `*Preferred Date:* ${form.date || "-"}`,
+    `*Preferred Time:* ${form.slot || "-"}`,
+  ];
+  if (form.message) lines.push(`*Message:* ${form.message}`);
+
+  const text = encodeURIComponent(lines.join("\n"));
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 const DEPARTMENTS = [
   {
     id: "cardiology",
@@ -116,6 +141,10 @@ export default function Appointment() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
+
+    // Send the filled details straight to WhatsApp
+    sendAppointmentToWhatsApp(form, activeDept.name);
+
     setSubmitted(true);
   };
 
@@ -168,10 +197,19 @@ export default function Appointment() {
                 Thank you, <span className="font-semibold text-slate-700">{form.name}</span>. Your
                 request with <span className="font-semibold text-slate-700">{form.doctor}</span> on{" "}
                 <span className="font-semibold text-slate-700">{form.date}</span> at{" "}
-                <span className="font-semibold text-slate-700">{form.slot}</span> has been received.
+                <span className="font-semibold text-slate-700">{form.slot}</span> has been sent to us
+                on WhatsApp.
               </p>
               <p className="text-sm text-slate-500 max-w-sm mb-6">
-                Our team will call you shortly on {form.phone} to confirm.
+                Didn't see the WhatsApp tab open?{" "}
+                <button
+                  type="button"
+                  onClick={() => sendAppointmentToWhatsApp(form, activeDept.name)}
+                  className="text-[#17B9A6] font-semibold underline underline-offset-2"
+                >
+                  Click here to send it again
+                </button>
+                .
               </p>
               <button
                 onClick={resetForm}

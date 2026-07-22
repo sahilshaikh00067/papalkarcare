@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Phone,
   CreditCard,
@@ -50,6 +51,30 @@ import logop from "../assets/Images/logop.jpg";
                a gold hairline that "draws itself" on scroll
    ============================================================ */
 
+/* ----------------------------- WHATSAPP CONFIG ----------------------------- */
+
+/** All appointment requests are sent to this WhatsApp number */
+const WHATSAPP_NUMBER = "918381845350";
+
+/** Builds a formatted WhatsApp message from an appointment form and opens WhatsApp with it pre-filled */
+function sendAppointmentToWhatsApp(form) {
+  const lines = [
+    "*New Appointment Request*",
+    "",
+    `*Name:* ${form.name || "-"}`,
+    `*Phone:* ${form.phone || "-"}`,
+    `*Email:* ${form.email || "-"}`,
+    `*Department:* ${form.department || "-"}`,
+    `*Doctor:* ${form.doctor || "Any available doctor"}`,
+    `*Preferred Date:* ${form.date || "-"}`,
+  ];
+  if (form.message) lines.push(`*Message:* ${form.message}`);
+
+  const text = encodeURIComponent(lines.join("\n"));
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 /* ----------------------------- DATA ----------------------------- */
 
 const NAV_LINKS = [
@@ -90,6 +115,7 @@ const OPD_HOURS = [
 ];
 
 const DOCTORS = [
+  "Dr. Parag Viren",
   "Dr. Viren Papalkar",
   "Dr. Sanjay Agrawal",
   "Dr. Satish Chiddarwar",
@@ -114,7 +140,7 @@ const NOTICES = [
 ];
 
 const SERVICES = [
-  { title: "MRI", icon: mri, desc: "The MRI at Medicare Multispeciality Hospital is the pusad 3T Wide-Bore system from Philips, one of the most advance MRI machines available." },
+  { title: "MRI", icon: mri, desc: "The MRI at Papalkar Gastrocare Multispeciality Hospital is the pusad 3T Wide-Bore system from Philips, one of the most advance MRI machines available." },
   { title: "EEG", icon: eeg, desc: "An electroencephalogram (EEG) is a test used to find problems related to electrical activity of the brain." },
   { title: "EMG", icon: emg, desc: "Electromyography (EMG) is a diagnostic procedure to assess the health of muscles and the nerve cells that control them (motor neurons)." },
   { title: "DEXA SCAN", icon: dexascan, desc: "Testing your bone density -- how strong your bones are -- is the only way to know for sure if you have osteoporosis." },
@@ -160,7 +186,7 @@ const TESTIMONIALS = [
     dept: "Maternity & Gynaecology",
     rating: 5,
     quote:
-      "Delivered both my children at Medicare. The nursing staff on the maternity floor treat you like family, and the NICU team's attentiveness gave us real peace of mind during a stressful week.",
+      "Delivered both my children at Papalkar Gastrocare. The nursing staff on the maternity floor treat you like family, and the NICU team's attentiveness gave us real peace of mind during a stressful week.",
     tag: "Maternity Ward",
   },
   {
@@ -456,6 +482,10 @@ function AppointmentModal({ open, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Send the appointment details straight to WhatsApp
+    sendAppointmentToWhatsApp(form);
+
     setSubmitted(true);
     setTimeout(() => {
       onClose();
@@ -498,7 +528,7 @@ function AppointmentModal({ open, onClose }) {
           <p className="text-[#D9B65C] text-xs font-semibold tracking-[0.25em] mb-1">GET IN TOUCH</p>
           <h3 className="text-white text-2xl sm:text-3xl font-bold font-serif-display">Book Your Appointment</h3>
           <p className="text-teal-50/80 text-sm mt-1">
-            Fill the form below, our team will call you back to confirm.
+            Fill the form below — we'll open WhatsApp so you can send it to us directly.
           </p>
         </div>
 
@@ -510,7 +540,7 @@ function AppointmentModal({ open, onClose }) {
               </div>
               <h4 className="text-xl font-bold text-slate-800 mb-1 font-serif-display">Request Sent!</h4>
               <p className="text-sm text-slate-500">
-                We'll contact you shortly to confirm your appointment.
+                We've opened WhatsApp with your details. Just hit send and we'll confirm shortly.
               </p>
             </div>
           ) : (
@@ -765,6 +795,7 @@ function AppointmentSection() {
     date: "",
     captcha: "",
   });
+  const [sent, setSent] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -774,7 +805,21 @@ function AppointmentSection() {
       alert("Please answer the security question correctly.");
       return;
     }
-    alert("Appointment request submitted!");
+
+    // Send the appointment details straight to WhatsApp
+    sendAppointmentToWhatsApp(form);
+
+    setSent(true);
+    setForm({
+      name: "",
+      phone: "",
+      email: "",
+      department: "Dermatologist",
+      doctor: "",
+      date: "",
+      captcha: "",
+    });
+    setTimeout(() => setSent(false), 5000);
   };
 
   return (
@@ -853,13 +898,18 @@ function AppointmentSection() {
               />
             </div>
 
-            <div className="sm:col-span-2 flex items-end">
+            <div className="sm:col-span-2 flex items-center gap-4">
               <button
                 type="submit"
                 className="btn-shimmer w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-[#0B3D66] to-[#17B9A6] text-white text-sm font-bold tracking-wide rounded hover:brightness-110 transition-all"
               >
                 MAKE APPOINMENT
               </button>
+              {sent && (
+                <span className="text-xs font-semibold text-[#17B9A6]">
+                  Opened WhatsApp — please tap send there!
+                </span>
+              )}
             </div>
           </form>
         </Reveal>
@@ -885,6 +935,8 @@ function AppointmentSection() {
 /* ----------------------------- WELCOME + NOTICE ----------------------------- */
 
 function WelcomeSection() {
+  const navigate = useNavigate();
+
   return (
     <section id="about" className="relative max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 pt-24 sm:pt-32 pb-16 grid lg:grid-cols-[auto_1fr_320px] gap-10 items-start">
       <div className="absolute -left-40 top-10 w-80 h-80 rounded-full bg-[#17B9A6]/10 blob pointer-events-none hidden lg:block" />
@@ -902,7 +954,8 @@ function WelcomeSection() {
 
       <Reveal delay={80}>
         <h2 className="text-3xl sm:text-4xl font-bold text-[#17B9A6] leading-tight font-serif-display">
-          Welcome To Medicare <br className="hidden sm:block" /> Multispeciality Hospital
+          Welcome To 
+Papalkar Gastrocare <br className="hidden sm:block" /> Multispeciality Hospital
         </h2>
         <span className="draw-line w-16 my-4" />
         <p className="text-xs font-bold tracking-wider text-slate-700 mb-3">FROM DIRECTORS DESK</p>
@@ -922,12 +975,16 @@ function WelcomeSection() {
           clock.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed mb-4">
-          The team MEDICARE is supported by standardized protocols and use of
+          The team 
+Papalkar Gastrocare is supported by standardized protocols and use of
           latest's technologies and techniques which help to deliver
           uncompromising patient care.
         </p>
         <p className="text-sm italic font-semibold text-slate-600 mb-4">Director Team</p>
-        <button className="btn-shimmer px-7 py-3 bg-gradient-to-r from-[#0B3D66] to-[#0a2f4f] text-white text-xs font-bold tracking-wider hover:brightness-110 transition-all inline-flex items-center gap-2">
+        <button
+          onClick={() => navigate("/contact")}
+          className="btn-shimmer px-7 py-3 bg-gradient-to-r from-[#0B3D66] to-[#0a2f4f] text-white text-xs font-bold tracking-wider hover:brightness-110 transition-all inline-flex items-center gap-2"
+        >
           READ MORE <ArrowRight size={14} />
         </button>
       </Reveal>
@@ -1076,7 +1133,8 @@ function ChooseBestBanner({ onBook }) {
       <Reveal className="relative bg-gradient-to-br from-[#071B33] via-[#0B3D66] to-[#17B9A6] text-white px-6 sm:px-12 lg:px-16 py-16 flex flex-col justify-center overflow-hidden">
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-white/5 blob" />
         <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-[#D9B65C]/10 blob blob-delay" />
-        <p className="relative text-xs font-bold tracking-[0.3em] text-[#D9B65C] mb-2">WHY MEDICARE</p>
+        <p className="relative text-xs font-bold tracking-[0.3em] text-[#D9B65C] mb-2">WHY 
+Papalkar Gastrocare</p>
         <h2 className="relative text-2xl sm:text-3xl font-bold mb-2 font-serif-display">Choose The Best For Your Health</h2>
         <span className="draw-line w-14 mb-6" />
         <ul className="relative space-y-3 mb-6">
@@ -1169,7 +1227,8 @@ function Testimonials() {
         <h2 className="text-3xl font-bold text-[#17B9A6] font-serif-display">What Our Patients Say</h2>
         <span className="draw-line w-14 mx-auto mt-3" />
         <p className="text-sm text-slate-500 max-w-lg mx-auto mt-4">
-          Real experiences from families who trusted Medicare with the care of the people they love most.
+          Real experiences from families who trusted 
+Papalkar Gastrocare with the care of the people they love most.
         </p>
       </Reveal>
 

@@ -10,23 +10,28 @@ import Academic from "./pages/Academic";
 import Gallery from "./pages/Gallery";
 import AboutUs from "./pages/About";
 import PrivacyPolicy from "./pages/Privacy";
+import TermsConditions from "./pages/TermsConditions";
+import WhatsAppButton from "./components/Whatsappbutton";
+import ScrollToTop from "./components/Scrolltotop";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
-                <Route path="/about" element={<AboutUs />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/appointment" element={<Appointment />} />
         <Route path="/career" element={<Career />} />
         <Route path="/academic" element={<Academic />} />
         <Route path="/gallery" element={<Gallery />} />
-
-
+        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/termsandcondition" element={<TermsConditions />} />
       </Routes>
       <Footer />
+      <WhatsAppButton/>
     </BrowserRouter>
   );
 }
