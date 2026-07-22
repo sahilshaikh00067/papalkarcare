@@ -12,7 +12,7 @@ import { MapPin, Phone, Mail, Plus, Minus, Send, ShieldCheck, MessageCircle } fr
 /* ----------------------------- WHATSAPP CONFIG ----------------------------- */
 
 /** All "Get In Touch" messages are sent to this WhatsApp number */
-const WHATSAPP_NUMBER = "918381845350";
+const WHATSAPP_NUMBER = "918799992699";
 
 /** Builds a formatted WhatsApp message from the contact form and opens WhatsApp with it pre-filled */
 function sendContactToWhatsApp(form) {
@@ -41,7 +41,7 @@ const ACCORDION_DATA = [
         </p>
         <p className="flex items-center gap-2.5">
           <Phone size={15} className="text-[#17B9A6] shrink-0" />
-          Emergency: <a href="tel:7888004343" className="text-[#0B3D66] font-semibold hover:text-[#17B9A6] transition-colors">788-800-43-43</a>
+          Emergency: <a href="tel:8799992699" className="text-[#0B3D66] font-semibold hover:text-[#17B9A6] transition-colors">788-800-43-43</a>
         </p>
         <p className="flex items-center gap-2.5">
           <Mail size={15} className="text-[#17B9A6] shrink-0" />
@@ -83,7 +83,7 @@ const ACCORDION_DATA = [
     title: "Emergency",
     content: (
       <div className="space-y-2.5 text-sm text-slate-600">
-        <p className="flex items-center gap-2.5"><Phone size={15} className="text-[#17B9A6]" /> Call us: 7888004343</p>
+        <p className="flex items-center gap-2.5"><Phone size={15} className="text-[#17B9A6]" /> Call us: 8799992699</p>
       </div>
     ),
   },
@@ -309,10 +309,10 @@ Papalkar Gastrocare+Multispeciality+Hospital+Pusad&output=embed"
           We Provide the highest level of satisfaction care &amp; services to our patients.
         </h2>
         <a
-          href="tel:+917888004343"
+          href="tel:+918799992699"
           className="relative mt-6 inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-[#D9B65C] text-[#071B33] font-bold text-sm sm:text-base tracking-wide hover:brightness-110 hover:-translate-y-0.5 shadow-lg shadow-black/20 transition-all"
         >
-          <Phone size={18} /> +91-7888004343, 7888007347, 7888004342, 7888004341
+          <Phone size={18} /> +91-8799992699, 7888007347, 7888004342, 7888004341
         </a>
       </section>
     </div>

@@ -46,7 +46,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-8 text-sm font-medium text-slate-600">
           <span className="flex items-center gap-2">
-            <Phone size={16} className="text-[#0B3D66]" /> 78880 04343
+            <Phone size={16} className="text-[#0B3D66]" /> 8799992699
           </span>
           <span className="flex items-center gap-2">
             <CreditCard size={16} className="text-[#0B3D66]" /> Online Payment

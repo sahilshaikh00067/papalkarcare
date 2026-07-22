@@ -54,7 +54,7 @@ import logop from "../assets/Images/logop.jpg";
 /* ----------------------------- WHATSAPP CONFIG ----------------------------- */
 
 /** All appointment requests are sent to this WhatsApp number */
-const WHATSAPP_NUMBER = "918381845350";
+const WHATSAPP_NUMBER = "918799992699";
 
 /** Builds a formatted WhatsApp message from an appointment form and opens WhatsApp with it pre-filled */
 function sendAppointmentToWhatsApp(form) {

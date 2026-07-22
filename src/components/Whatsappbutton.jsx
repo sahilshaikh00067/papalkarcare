@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react";
    (outside your <Routes>, so it shows on every page).
    ============================================================ */
 
-const WHATSAPP_NUMBER = "918381845350"; // country code + number, no + or spaces
+const WHATSAPP_NUMBER = "918799992699"; // country code + number, no + or spaces
 const DEFAULT_MESSAGE = "Hello! I would like to know more about Papalkar Gastrocare Hospital.";
 
 export default function WhatsAppButton() {

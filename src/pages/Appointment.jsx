@@ -26,7 +26,7 @@ import {
 /* ----------------------------- WHATSAPP CONFIG ----------------------------- */
 
 /** All appointment requests are sent to this WhatsApp number */
-const WHATSAPP_NUMBER = "918381845350";
+const WHATSAPP_NUMBER = "918799992699";
 
 /** Builds a formatted WhatsApp message from an appointment form and opens WhatsApp with it pre-filled */
 function sendAppointmentToWhatsApp(form, departmentName) {
@@ -400,7 +400,7 @@ export default function Appointment() {
               For urgent cases, please call our emergency line directly instead of booking online.
             </p>
             <p className="relative flex items-center gap-2 text-lg font-bold tracking-wide">
-              <Phone size={18} className="text-[#D9B65C]" /> 78880 04343
+              <Phone size={18} className="text-[#D9B65C]" /> 8799992699
             </p>
           </div>
         </aside>

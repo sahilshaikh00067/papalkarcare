@@ -35,7 +35,7 @@ import {
 /* ----------------------------- WHATSAPP CONFIG ----------------------------- */
 
 /** All job applications are sent to this WhatsApp number */
-const WHATSAPP_NUMBER = "918381845350";
+const WHATSAPP_NUMBER = "918799992699";
 
 /**
  * Builds a formatted WhatsApp message from the application form and opens
